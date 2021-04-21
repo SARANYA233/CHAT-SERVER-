@@ -1,0 +1,34 @@
+import socket
+import threading 
+from threading import Thread
+
+s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+
+server_ip="192.168.43.177"
+server_port=1234
+
+client_ip="192.168.43.45"
+client_port=10050
+
+s.bind( (server_ip,server_port) )
+print("CHAT SERVER".center(60))
+
+def recv():
+
+    while True:
+        x=s.recvfrom(1024)
+        data=x[0].decode()
+        print("\n receive>> "+data)
+        if data == "bye":
+            exit()
+
+def send():
+    while True:
+        string=input(" send>> ")
+        s.sendto(bytes(string.encode()),(client_ip,client_port))
+
+        if string == "bye":
+            exit()
+
+Thread(target=recv).start()
+Thread(target=send).start()
